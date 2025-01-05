@@ -21,7 +21,6 @@ Certifique-se de ter o Python instalado na sua máquina. Caso não tenha, você 
 Instale as dependências do projeto usando o pip:
 
 bash
-Copiar código
 pip install ply
 3. Executando o Software
 Para rodar o analisador léxico, basta fornecer o caminho do arquivo que você deseja analisar. O software vai processar o arquivo e exibir as tabelas de símbolos e erros lexicais encontrados.
@@ -29,19 +28,14 @@ Para rodar o analisador léxico, basta fornecer o caminho do arquivo que você d
 Execute o seguinte comando:
 
 bash
-Copiar código
 python interface.py
-O programa solicitará que você forneça o caminho do arquivo de entrada.
 
 📝 Como Usar
 Após rodar o programa, o fluxo será o seguinte:
 
-Entrada do Caminho do Arquivo: Você será solicitado a fornecer o caminho de um arquivo de texto que deseja analisar.
-
 Exemplo:
 
 javascript
-Copiar código
 Digite o caminho do arquivo para análise: /caminho/para/o/arquivo.txt
 Análise Lexical: O software irá analisar o conteúdo do arquivo e identificará os seguintes componentes:
 
@@ -57,7 +51,6 @@ Erros Lexicais: Relatando qualquer erro encontrado durante a análise.
 A estrutura do projeto é a seguinte:
 
 graphql
-Copiar código
 analisador-lexico/
 ├── lexer.py          # Contém o analisador léxico e a lógica de processamento.
 ├── interface.py      # Interface que exibe os resultados ao usuário.
@@ -74,7 +67,6 @@ Após processar o arquivo, a saída pode se parecer com isto:
 
 Tabela de Símbolos:
 markdown
-Copiar código
 =========================================
 Tabela de Símbolos:
 =========================================
@@ -102,7 +94,6 @@ Properties:
         Ocorrências: 3
 Erros Lexicais:
 perl
-Copiar código
 =========================================
 Erros Lexicos encontrados:
 =========================================
