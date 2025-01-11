@@ -128,35 +128,42 @@ def analyze_file(file_path):
         data = file.read()
 
     lexer.input(data)
-    symbol_table = {
-        "keywords": {},
-        "classnames": {},
-        "properties": {},
-        "individuals": {},
-        "namespaces": {},
-        "datatypes": {},
-        "cardinalities": {},
-        "specialsymbols": {}
-    }
-
+    # symbol_table = {
+    #     "keywords": {},
+    #     "classnames": {},
+    #     "properties": {},
+    #     "individuals": {},
+    #     "namespaces": {},
+    #     "datatypes": {},
+    #     "cardinalities": {},
+    #     "specialsymbols": {}
+    # }
+    #
+    # for token in lexer:
+    #     token_type = token.type.lower()
+    #     value = token.value.lower()
+        
+    #     if token_type == 'keyword' or reserved.get(value) != None:
+    #         symbol_table['keywords'][value] = symbol_table['keywords'].get(value, 0) + 1
+    #     elif token_type == 'classname':
+    #         symbol_table['classnames'][value] = symbol_table['classnames'].get(value, 0) + 1
+    #     elif token_type == 'property':
+    #         symbol_table['properties'][value] = symbol_table['properties'].get(value, 0) + 1
+    #     elif token_type == 'individual':
+    #         symbol_table['individuals'][value] = symbol_table['individuals'].get(value, 0) + 1
+    #     elif token_type == 'namespace':
+    #         symbol_table['namespaces'][value] = symbol_table['namespaces'].get(value, 0) + 1
+    #     elif token_type == 'datatype':
+    #         symbol_table['datatypes'][value] = symbol_table['datatypes'].get(value, 0) + 1
+    #     elif token_type == 'cardinality':
+    #         symbol_table['cardinalities'][value] = symbol_table['cardinalities'].get(value, 0) + 1
+    #     elif token_type == 'specialsymbol':
+    #         symbol_table['specialsymbols'][value] = symbol_table['specialsymbols'].get(value, 0) + 1\
+    
+    symbol_table = []
+    
     for token in lexer:
-        token_type = token.type.lower()
-        value = token.value.lower()
-        if token_type == 'keyword' or reserved.get(value) != None:
-            symbol_table['keywords'][value] = symbol_table['keywords'].get(value, 0) + 1
-        elif token_type == 'classname':
-            symbol_table['classnames'][value] = symbol_table['classnames'].get(value, 0) + 1
-        elif token_type == 'property':
-            symbol_table['properties'][value] = symbol_table['properties'].get(value, 0) + 1
-        elif token_type == 'individual':
-            symbol_table['individuals'][value] = symbol_table['individuals'].get(value, 0) + 1
-        elif token_type == 'namespace':
-            symbol_table['namespaces'][value] = symbol_table['namespaces'].get(value, 0) + 1
-        elif token_type == 'datatype':
-            symbol_table['datatypes'][value] = symbol_table['datatypes'].get(value, 0) + 1
-        elif token_type == 'cardinality':
-            symbol_table['cardinalities'][value] = symbol_table['cardinalities'].get(value, 0) + 1
-        elif token_type == 'specialsymbol':
-            symbol_table['specialsymbols'][value] = symbol_table['specialsymbols'].get(value, 0) + 1
+        symbol_table.append([token.type, token.value])
+
 
     return symbol_table

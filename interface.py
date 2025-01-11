@@ -18,17 +18,20 @@ def display_symbol_table(symbol_table):
     print(GREEN + "Tabela de Símbolos:" + RESET)
     print(BLUE + separator + RESET)
 
-    for category, items in symbol_table.items():
-        print(f"\n{CYAN}{category.capitalize()}:{RESET}")
-        print(CYAN + "-" * (len(category) + 10) + RESET)
+    # for category, items in symbol_table.items():
+    #     print(f"\n{CYAN}{category.capitalize()}:{RESET}")
+    #     print(CYAN + "-" * (len(category) + 10) + RESET)
 
-        if items:
-            for lexeme, count in items.items():
-                print(f"{PURPLE}\tLexema: {RESET}{lexeme}")
-                print(f"{CYAN}\t\tOcorrências: {count}{RESET}")
-            print(YELLOW + "\t" + "-" * 30 + RESET)
-        else:
-            print(f"{RED}\tNenhum lexema encontrado para esta categoria.{RESET}")
+    #     if items:
+    #         for lexeme, count in items.items():
+    #             print(f"{PURPLE}\tLexema: {RESET}{lexeme}")
+    #             print(f"{CYAN}\t\tOcorrências: {count}{RESET}")
+    #         print(YELLOW + "\t" + "-" * 30 + RESET)
+    #     else:
+    #         print(f"{RED}\tNenhum lexema encontrado para esta categoria.{RESET}")
+    
+    for items in symbol_table:
+        print(items)
 
 def display_errors():
     if errors:
