@@ -1,5 +1,9 @@
 import lexer
+import parser
+
 from lexer import errors
+from lexer import lexer
+
 
 # Cores para o terminal
 RESET = "\u001B[0m"
@@ -42,13 +46,34 @@ def display_errors():
             print(f"\n{RED}Erro no caractere '{error.value}' na linha {error.line}, coluna {error.column}.{RESET}")
         print("\n" + BLUE + separator + RESET)
 
-def main(file_path):
+def read_file(file_path):
     try:
-        result = lexer.analyze_file(file_path)
-        display_symbol_table(result)
-        display_errors()
+        with open(file_path, 'r') as file:
+            return file.read()
     except FileNotFoundError:
         print(RED + f"Arquivo '{file_path}' não encontrado." + RESET)
+        return ""
+
+def main(file_path):
+    # try:
+    #     result = lexer.analyze_file(file_path)
+    #     display_symbol_table(result)
+    #     display_errors()
+    # except FileNotFoundError:
+    #     print(RED + f"Arquivo '{file_path}' não encontrado." + RESET)
+    entrada = """
+    Class: CheesyPizza
+    EquivalentTo:
+    Pizza and (hasTopping some CheeseTopping)
+    Individuals:
+    CheesyPizza1
+
+    Class: HighCaloriePizza
+    EquivalentTo:
+    Pizza and (hasCaloricContent some xsd:integer)
+    """
+    
+    result = parser.parse(entrada, lexer=lexer)
 
 if __name__ == '__main__':
     file_path = 'files/input.txt'
