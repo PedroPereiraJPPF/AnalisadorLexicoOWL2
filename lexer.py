@@ -5,16 +5,6 @@ import Error as Error
 
 errors = []
 
-# Cores para o terminal
-RESET = "\u001B[0m"
-RED = "\u001B[31m"
-GREEN = "\u001B[32m"
-YELLOW = "\u001B[33m"
-BLUE = "\u001B[34m"
-CYAN = "\u001B[36m"
-PURPLE = "\u001B[35m"
-BOLD = "\u001B[1m"
-
 # Palavras reservadas
 reserved = {
     'some': 'SOME',
@@ -64,10 +54,30 @@ special_symbols = {
 }
 
 # Tokens
+# tokens = [
+#     'CLASSNAME', 'PROPERTY', 'INDIVIDUAL', 'NAMESPACE',
+#     'DATATYPE', 'CARDINALITY', 'SPECIALSYMBOL', 'KEYWORD'
+# ] + list(reserved.values()) + list(special_symbols.values())
+
 tokens = [
-    'CLASSNAME', 'PROPERTY', 'INDIVIDUAL', 'NAMESPACE',
-    'DATATYPE', 'CARDINALITY', 'SPECIALSYMBOL', 'KEYWORD'
-] + list(reserved.values())
+    'CLASSNAME',   
+    'PROPERTY',   
+    'INDIVIDUAL',
+    'DATATYPE',
+    
+    # Palavras reservadas
+    'SOME',
+    'CLASS',       
+    'INDIVIDUALS', 
+    'SUBCLASSOF',
+    'DISJOINTCLASSES',
+    "Comma",
+    'NAMESPACE',
+    'MIN',
+    'MAX',
+    'CARDINALITY',
+]
+
 
 # Ignorar espaços em branco
 t_ignore = ' \t\r'
@@ -79,6 +89,7 @@ def t_reserved_variant(t):
 
 def t_NAMESPACE(t):
     r'(owl:|rdf:|xsd:|rdfs:)'
+    t.type='NAMESPACE'
     return t
 
 def t_DATATYPE(t):
@@ -87,11 +98,12 @@ def t_DATATYPE(t):
 
 def t_especial_symbols(t):
     r'[<>\[\]{}(),=]|>=|<='
-    t.type = reserved.get(t.value.lower(), 'SPECIALSYMBOL')
+    t.type = reserved.get(t.value.lower(), special_symbols.get(t.value.lower()))
     return t
 
 def t_INDIVIDUAL(t):
     r'[A-Z][a-zA-Z0-9]*[0-9]'
+    t.type="INDIVIDUAL"
     return t
 
 def t_CLASSNAME(t):
@@ -115,6 +127,14 @@ def find_column(input, token):
     line_start = input.rfind('\n', 0, token.lexpos) + 1
     return (token.lexpos - line_start) + 1
 
+def t_COMMENT_LINE(p):
+    r'\#.*'
+    pass
+
+def t_COMMENT_BLOCK(p):
+    r'/\*.*?\*/'
+    pass
+
 # Tratamento de erros
 def t_error(t):
     error = Error.Error(t.value[0], t.lineno, find_column(t.lexer.lexdata, t))
@@ -122,48 +142,3 @@ def t_error(t):
     t.lexer.skip(1)
 
 lexer = lex.lex()
-
-def analyze_file(file_path):
-    with open(file_path, 'r') as file:
-        data = file.read()
-
-    lexer.input(data)
-    # symbol_table = {
-    #     "keywords": {},
-    #     "classnames": {},
-    #     "properties": {},
-    #     "individuals": {},
-    #     "namespaces": {},
-    #     "datatypes": {},
-    #     "cardinalities": {},
-    #     "specialsymbols": {}
-    # }
-    #
-    # for token in lexer:
-    #     token_type = token.type.lower()
-    #     value = token.value.lower()
-        
-    #     if token_type == 'keyword' or reserved.get(value) != None:
-    #         symbol_table['keywords'][value] = symbol_table['keywords'].get(value, 0) + 1
-    #     elif token_type == 'classname':
-    #         symbol_table['classnames'][value] = symbol_table['classnames'].get(value, 0) + 1
-    #     elif token_type == 'property':
-    #         symbol_table['properties'][value] = symbol_table['properties'].get(value, 0) + 1
-    #     elif token_type == 'individual':
-    #         symbol_table['individuals'][value] = symbol_table['individuals'].get(value, 0) + 1
-    #     elif token_type == 'namespace':
-    #         symbol_table['namespaces'][value] = symbol_table['namespaces'].get(value, 0) + 1
-    #     elif token_type == 'datatype':
-    #         symbol_table['datatypes'][value] = symbol_table['datatypes'].get(value, 0) + 1
-    #     elif token_type == 'cardinality':
-    #         symbol_table['cardinalities'][value] = symbol_table['cardinalities'].get(value, 0) + 1
-    #     elif token_type == 'specialsymbol':
-    #         symbol_table['specialsymbols'][value] = symbol_table['specialsymbols'].get(value, 0) + 1\
-    
-    symbol_table = []
-    
-    for token in lexer:
-        symbol_table.append([token.type, token.value])
-
-
-    return symbol_table

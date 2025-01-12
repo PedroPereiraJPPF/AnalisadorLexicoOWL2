@@ -1,0 +1,34 @@
+# Bytecode Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Arquivos de ambiente virtual
+venv/
+env/
+*.env
+
+# Arquivos de configuração do IDE
+.vscode/
+.idea/
+*.swp
+
+# Arquivos de log
+*.log
+
+# Dependências do Python
+*.egg-info/
+*.dist-info/
+
+# Arquivos temporários
+*.bak
+*.tmp
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos do ply
+parser.out
+parsetab.py

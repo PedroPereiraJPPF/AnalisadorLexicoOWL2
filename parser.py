@@ -1,225 +1,85 @@
 import ply.yacc as yacc
-
 from lexer import tokens
 
-def s(p):
-    """
-    s : CLASS CLASSNAME class_type resto
-    """
-    p[0] = ("Class:", p[2], p[3], p[4])
+# Essa estrutura serve para armazenar a forma das classes
+classes = {}
 
-def class_type(p):
-    """
-    class_type : primitive
-               | defined
-    """
-    p[0] = p[1]
+# Por enquanto só atende as classes primitivas
+# TODO: Adicionar suporte para classes DEFINIDAS
 
-def primitive(p):
-    """
-    primitive : SUBCLASSOF CLASSNAME prerequisiteP
-              | SUBCLASSOF '{' enum_list '}'
-              | SUBCLASSOF coveted_list
-    """
-    if len(p) == 3:
-        p[0] == ("SubClassOf:", p[2])
-    elif len(p) == 4:
-        p[0] = ("SubClassOf:", p[2], p[3])
-    elif len(p) == 5 and p[2] == '{':
-        p[0] = ("SubClassOf:", p[3])
-        
+def p_class_declaration(p):
+    '''class_declaration : CLASS CLASSNAME subclass_section disjoint_section individual_section'''
+    classes[p[2]] = {
+        'subclass': p[3],
+        'disjoint': p[4],
+        'individuals': p[5]
+    }
+    print(f"Classe definida: {p[2]}")
+    p[0] = classes[p[2]]
 
-def prerequisiteP(p):
-    """
-    prerequisiteP : prerequisiteP ',' constraint closureP
-                  | prerequisitePP 
-                  | empty
-    """
-    if len(p) == 1:
-        p[0] = []
-    elif len(p) == 2:
-        p[0] = (p[1])
-    elif len(p) == 5:
-        p[0] = p[1] + p[3] + p[4]
-        
-def prerequisitePP(p):
-    """
-    prerequisitePP : prerequisitePP ',' constraintP closurePP
-                   | empty
-    """
-    if len(p) == 1:
-        p[0] = ()
-    elif len(p) == 5:
-        p[0] = (p[1], p[3], p[4])
-        
-def constraint(p):
-    """
-    constraint : PROPERTY conective id
-    """
-    p[0] = (p[1], p[2], p[3])
+def p_subclass_section(p):
+    '''subclass_section : SUBCLASSOF property_list
+                         | empty'''
+    p[0] = p[2] if len(p) > 2 else []
 
-def constraintP(p):
-    """
-    constraintP : '(' constraint ')' 
-                | '(' PROPERTY conective constraintP ')'
-                | '(' constraintP ')' 'or' '(' constraintP ')'
-    """
+def p_disjoint_section(p):
+    '''disjoint_section : DISJOINTCLASSES class_list
+                         | empty'''
+    p[0] = p[2] if len(p) > 2 else []
+
+def p_individual_section(p):
+    '''individual_section : INDIVIDUALS individual_list
+                           | empty'''
+    p[0] = p[2] if len(p) > 2 else []
+
+def p_property_list(p):
+    '''property_list : property_list Comma property
+                     | property'''
     if len(p) == 4:
-        p[0] = [p[2]]
-    elif len(p) == 6:
-        p[0] = p[2] + [p[3]] + [p[4]]
-    elif len(p) == 8:
-        p[0] = [p[2]] + [p[6]]
-
-def conective(p):
-    """
-    conective : SOME
-              | MIN CARDINALITY
-    """
-    if len(p) == 2:
-        p[0] = p[1]
-    elif len(p) == 3:
-        p[0] = p[1] + p[2]
-
-def closureP(p):
-    """
-    closureP : closureP ',' PROPERTY 'only' CLASSNAME
-             | closureP ',' PROPERTY 'only' '(' coveted_list ')'
-             | empty
-    """
-    if len(p) == 1:
-        p[0] = []
-    elif len(p) == 6:
-        p[0] = [p[1]] + p[3] + p[5]
-    elif len(p) == 8:
-        p[0] = [p[1]] + p[3] + [p[6]]
-
-def closurePP(p):
-    """
-    closurePP : ',' '(' PROPERTY 'only' CLASSNAME ')'
-              | ',' '(' PROPERTY 'only' '(' coveted_list ')'')'
-    """
-    if len(p) == 6:
-        p[0] = p[2] + p[4]
-    elif len(p) == 8:
-        p[0] = p[2] + [p[5]]
-    
-def enum_list(p):
-    """
-    enum_list : enum_list ',' CLASSNAME
-              | CLASSNAME
-    """
-    if len(p) == 2:
-        p[0] = p[1]
-    elif len(p) == 4:
-        p[0] = [p[1]] + p[3]
-
-def coveted_list(p):
-    """
-    coveted_list : coveted_list OR CLASSNAME
-                 | CLASSNAME
-    """
-    if len(p) == 2:
-        p[0] = p[1]
-    elif len(p) == 4:
-        p[0] = [p[1]] + p[3]
-
-def defined(p):
-    """
-    defined : EQUIVALENTTO CLASSNAME AND prerequisiteD
-            | EQUIVALENTTO '{' enum_list '}'
-            | EQUIVALENTTO coveted_list
-    """
-    if len(p) == 4:
-        p[0] = ("EquivalentTo:", p[3])
-    elif len(p) == 5:
-        p[0] = ("EquivalentTo:", p[3])
-
-def prerequisiteD(p):
-    """
-    prerequisiteD : prerequisiteD AND constraintP closureD
-                  | prerequisiteDP 
-                  | empty
-    """
-    if len(p) == 1:
-        p[0] = []
-    elif len(p) == 2:
+        p[0] = p[1] + [p[3]]
+    else:
         p[0] = [p[1]]
-    elif len(p) == 5:
-        p[0] = [p[1]] + p[2] + [p[3]] + [p[4]]
 
-def closureD(p):
-    """
-    closureD : closureD AND PROPERTY 'only' CLASSNAME
-             | closureD AND PROPERTY 'only' '(' coveted_list ')'
-             | empty
-    """
-    if len(p) == 1:
-        p[0] = []
-    elif len(p) == 6:
-        p[0] = [p[1]] + p[2] + p[3] + p[5]
-    elif len(p) == 8:
-        p[0] = [p[1]] + p[2] + p[3] + [p[6]]
-        
-def prerequisiteDP(p):
-    """
-    prerequisiteDP : prerequisiteDP AND constraintP closurePP
-                   | empty
-    """
-    if len(p) == 1:
-        p[0] = ()
-    elif len(p) == 5:
-        p[0] = [p[1]] + p[2] + [p[3]] + [p[4]]
-        
-def id(p):
-    """
-    id : CLASSNAME
-       | NAMESPACE DATATYPE
-    """
-    if len(p) == 2:
-        p[0] = p[1]
-    elif len(p) == 3:
-        p[0] = p[1] + p[2]
-        
-def resto(p):
-    """
-    resto : disjoint_classes individuals
-    """
-    if len(p) == 3:
-        p[0] = [p[1]] + [p[2]]
+def p_class_list(p):
+    '''class_list : class_list Comma CLASSNAME
+                  | CLASSNAME'''
+    if len(p) == 4:
+        p[0] = p[1] + [p[3]]
+    else:
+        p[0] = [p[1]]
 
-def disjoint_classes(p):
-    """
-    disjoint_classes : DISJOINTCLASSES class_list
-    """
-    if len(p) == 3:
-        p[0] = ("DisjointClasses:", p[2])
+def p_individual_list(p):
+    '''individual_list : individual_list Comma INDIVIDUAL
+                       | INDIVIDUAL'''
+    if len(p) == 4:
+        p[0] = p[1] + [p[3]]
+    else:
+        p[0] = [p[1]]
 
-def class_list(p):
-    """
-    class_list : CLASSNAME
-               | class_list ',' CLASSNAME
-    """
-    if len(p) == 2:
-        p[0] = p[1]
-    elif len(p) == 4:
-        p[0] = [p[1]] + p[3]
-        
-def individuals(p):
-    """
-    individuals : INDIVIDUALS individual_list
-    """
-    if len(p) == 3:
-        p[0] = ("Individuals:", p[2])
+def p_property(p):
+    '''property : PROPERTY SOME CLASSNAME
+                | PROPERTY SOME DATATYPE
+                | PROPERTY SOME NAMESPACE DATATYPE
+                | PROPERTY MIN CARDINALITY CLASSNAME
+                | PROPERTY MAX CARDINALITY CLASSNAME'''
 
-def individual_list(p):
-    """
-    individual_list : INDIVIDUAL
-                    | individual_list ',' INDIVIDUAL
-    """
-    if len(p) == 2:
-        p[0] = p[1]
-    elif len(p) == 4:
-        p[0] = [p[1]] + p[3]
-        
+    if (len(p) == 4):
+        p[0] = f"{p[1]} some {p[3]}"
+    else: 
+        if (p[2] == 'min'):
+            p[0] = f"{p[1]} min {p[3]} {p[4]}"
+        else: 
+            p[0] = f"{p[1]} some {p[3]}{p[4]}"
+
+def p_empty(p):
+    '''empty :'''
+    p[0] = None
+
+def p_error(p):
+    if p:
+        print(f"Erro de sintaxe na linha {p.lineno}: token inesperado '{p.value}'")
+    else:
+        print("Erro de sintaxe no final da entrada.")
+
 parser = yacc.yacc()
+
