@@ -8,7 +8,26 @@ classes = {}
 # TODO: Adicionar suporte para classes DEFINIDAS
 
 def p_class_declaration(p):
-    '''class_declaration : CLASS CLASSNAME subclass_section disjoint_section individual_section'''
+    '''class_declaration : primitive_class_declaration 
+                           | defined_class_declaration'''
+
+    p[0] = p[1]
+
+def p_defined_class_declaration(p):
+    '''defined_class_declaration : CLASS CLASSNAME equivalentTo_section disjoint_section individual_section'''
+
+    classes[p[2]] = {
+        'equivalentTo': p[3],
+        'disjoint': p[4],
+        'individuals': p[5]
+    }
+
+    print(f"Classe definida: {p[2]}")
+
+    p[0] = classes[p[2]]
+
+def p_primitive_class_declaration(p):
+    '''primitive_class_declaration : CLASS CLASSNAME subclass_section disjoint_section individual_section'''
     classes[p[2]] = {
         'subclass': p[3],
         'disjoint': p[4],
@@ -16,6 +35,17 @@ def p_class_declaration(p):
     }
     print(f"Classe definida: {p[2]}")
     p[0] = classes[p[2]]
+
+def p_equivalentTo_section(p):
+    '''equivalentTo_section : EQUIVALENTTO CLASSNAME AND LeftParen property_list RightParen
+                            | empty'''
+    if len(p) == 7:
+        p[0] = {
+            'classname': p[2],
+            'properties': p[5]
+        }
+    else:
+        p[0] = []
 
 def p_subclass_section(p):
     '''subclass_section : SUBCLASSOF property_list

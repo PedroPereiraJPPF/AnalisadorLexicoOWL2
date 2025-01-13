@@ -64,6 +64,7 @@ tokens = [
     'PROPERTY',   
     'INDIVIDUAL',
     'DATATYPE',
+    'EQUIVALENTTO',
     
     # Palavras reservadas
     'SOME',
@@ -76,6 +77,9 @@ tokens = [
     'MIN',
     'MAX',
     'CARDINALITY',
+    'AND',
+    'LeftParen',
+    'RightParen',
 ]
 
 

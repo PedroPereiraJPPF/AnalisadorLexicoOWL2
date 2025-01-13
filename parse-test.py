@@ -101,3 +101,38 @@ SubClassOf:
     hasCaloricContent some xsd:integer
 """
 test_parser(input_data_4, None)
+
+# Teste de classes definidas
+
+input_data_5 = """
+Class: CheesyPizza
+ EquivalentTo:
+    Pizza and (hasTopping some CheeseTopping)
+ Individuals:
+    CheesyPizza1"""
+
+expected_output5 = {
+    'equivalentTo': 
+        {'classname': 'Pizza', 'properties': ['hasTopping some CheeseTopping']},
+        'disjoint': [], 'individuals': ['CheesyPizza1']
+    }
+
+test_parser(input_data_5, expected_output5)
+
+input_data_6 = """
+Class: CheesyPizza
+ EquivalentTo:
+    Pizza and (hasTopping some CheeseTopping)
+ DisjointClasses: 
+    PizzaTopping, Topping
+ Individuals:
+    CheesyPizza1"""
+
+expected_output6 = {
+    'equivalentTo': 
+        {'classname': 'Pizza', 'properties': ['hasTopping some CheeseTopping']},
+        'disjoint': ['PizzaTopping', 'Topping'], 
+        'individuals': ['CheesyPizza1']
+    }
+
+test_parser(input_data_6, expected_output6)
