@@ -32,3 +32,5 @@ Thumbs.db
 # Arquivos do ply
 parser.out
 parsetab.py
+__pycache__/Error.cpython-312.pyc
+__pycache__/lexer.cpython-312.pyc

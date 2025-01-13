@@ -39,18 +39,18 @@ reserved_regex = r'\b([sS][oO][mM][eE])|' \
 
 # Símbolos especiais
 special_symbols = {
-    '(': 'LeftParen',
-    ')': 'RightParen',
-    '[': 'LeftBracket',
-    ']': 'RightBracket',
-    '{': 'LeftBrace',
-    '}': 'RightBrace',
-    ',': 'Comma',
-    '>': 'GreaterThan',
-    '<': 'LessThan',
-    '=': 'Equal',
-    '>=': 'GreaterOrEqual',
-    '<=': 'LessOrEqual',
+    '(': 'LEFTPAREN',
+    ')': 'RIGHTPAREN',
+    '[': 'LEFTBRACKET',
+    ']': 'RIGHTBRACKET',
+    '{': 'LEFTBRACE',
+    '}': 'RIGHTBRACE',
+    ',': 'COMMA',
+    '>': 'GREATERTHAN',
+    '<': 'LESSTHAN',
+    '=': 'EQUAL',
+    '>=': 'GREATEROREQUAL',
+    '<=': 'LESSOREQUAL',
 }
 
 # Tokens
@@ -72,14 +72,21 @@ tokens = [
     'INDIVIDUALS', 
     'SUBCLASSOF',
     'DISJOINTCLASSES',
-    "Comma",
+    'COMMA',
     'NAMESPACE',
     'MIN',
     'MAX',
     'CARDINALITY',
     'AND',
-    'LeftParen',
-    'RightParen',
+    'OR',
+    'ONLY',
+    'LEFTPAREN',
+    'RIGHTPAREN',
+    'LEFTBRACKET',
+    'RIGHTBRACKET',
+    'LEFTBRACE',
+    'RIGHTBRACE',
+    'GREATEROREQUAL'
 ]
 
 
