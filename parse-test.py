@@ -27,21 +27,14 @@ def test_parser(input_data, expected_output):
 input_data_1 = """
 Class: Pizza
 SubClassOf:
-    hasBase some PizzaBase,
-    hasCaloricContent some xsd:integer
-DisjointClasses:
-    Pizza, PizzaBase, PizzaTopping
-Individuals:
-    CustomPizza1,
-    CustomPizza2
+    (hasBase some (hasIngredient some TomatoSauce))
 """
 expected_output_1 = {
     'subclass': [
-        'hasBase some PizzaBase',
-        'hasCaloricContent some xsd:integer'
+        'hasBase some (hasIngredient some TomatoSauce)'
     ],
-    'disjoint': ['Pizza', 'PizzaBase', 'PizzaTopping'],
-    'individuals': ['CustomPizza1', 'CustomPizza2']
+    'disjoint': [],
+    'individuals': []
 }
 
 test_parser(input_data_1, expected_output_1)
@@ -49,9 +42,11 @@ test_parser(input_data_1, expected_output_1)
 input_data_2 = """
 Class: Burger
 SubClassOf:
+    FastFood,
     hasBase some BurgerBase,
-    hasCaloricContent some xsd:integer,
-    hasTopping some Topping
+    hasCaloricContent some xsd:integer[>=200],
+    hasTopping min 3 BurgerTopping,
+    hasTopping max 5 BurgerTopping
 DisjointClasses:
     Burger, BurgerBase, BurgerTopping
 Individuals:
@@ -59,9 +54,11 @@ Individuals:
 """
 expected_output_2 = {
     'subclass': [
+        'FastFood',
         'hasBase some BurgerBase',
-        'hasCaloricContent some xsd:integer',
-        'hasTopping some Topping'
+        'hasCaloricContent some xsd:integer[>=200]',
+        'hasTopping min 3 BurgerTopping',
+        'hasTopping max 5 BurgerTopping'
     ],
     'disjoint': ['Burger', 'BurgerBase', 'BurgerTopping'],
     'individuals': ['ClassicBurger1']
@@ -73,21 +70,22 @@ test_parser(input_data_2, expected_output_2)
 input_data_3 = """
 Class: PizzaTopping
 SubClassOf:
-    hasTopping some Topping,
-    hasCaloricContent min 1 PizzaTopping
+    TomatoTopping or CheeseTopping or VeggieTopping
 DisjointClasses: 
     PizzaTopping, Topping
 Individuals:
+    TomatoTopping1,
     CheeseTopping1,
     VeggieTopping1
 """
 expected_output_3 = {
     'subclass': [
-        'hasTopping some Topping',
-        'hasCaloricContent min 1 PizzaTopping'
+        'TomatoTopping',
+        'CheeseTopping',
+        'VeggieTopping'
     ],
     'disjoint': ['PizzaTopping', 'Topping'],
-    'individuals': ['CheeseTopping1', 'VeggieTopping1']
+    'individuals': ['TomatoTopping1','CheeseTopping1', 'VeggieTopping1']
 }
 
 test_parser(input_data_3, expected_output_3)

@@ -17,6 +17,7 @@ reserved = {
     'not': 'NOT',
     'and': 'AND',
     'or': 'OR',
+    'only' : 'ONLY',
     'class:': 'CLASS',
     'equivalentto:': 'EQUIVALENTTO',
     'individuals:': 'INDIVIDUALS',
@@ -35,6 +36,7 @@ reserved_regex = r'\b([sS][oO][mM][eE])|' \
                  r'([nN][oO][tT])|' \
                  r'([aA][nN][dD])|' \
                  r'([oO][rR])\b|' \
+                 r'([oO][nN][lL][yY])|' \
                  r'(Class:|EquivalentTo:|Individuals:|SubClassOf:|DisjointClasses:)'
 
 # Símbolos especiais
@@ -107,8 +109,8 @@ def t_DATATYPE(t):
     r'(anyURI|base64Binary|boolean|byte|dateTime|dateTimeStamp|decimal|double|float|gDay|gMonth|gMonthDay|gYear|gYearMonth|hexBinary|integer|int|language|long|negativeInteger|NMTOKEN|nonNegativeInteger|nonPositiveInteger|normalizedString|positiveInteger|short|string|token|unsignedByte|unsignedInt|unsignedLong|unsignedShort)'
     return t
 
-def t_especial_symbols(t):
-    r'[<>\[\]{}(),=]|>=|<='
+def t_special_symbols(t):
+    r'>=|<=|[<>\[\]{}(),=]'
     t.type = reserved.get(t.value.lower(), special_symbols.get(t.value.lower()))
     return t
 
