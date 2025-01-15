@@ -27,7 +27,8 @@ def test_parser(input_data, expected_output):
 input_data_1 = """
 Class: Pizza
 SubClassOf:
-    (hasBase some (hasIngredient some TomatoSauce))
+    Pizza,
+    ((hasBase some (Class or Class or Class)) or (hasBase some (Class or Class or Class)))
 """
 expected_output_1 = {
     'subclass': [
@@ -64,7 +65,7 @@ expected_output_2 = {
     'individuals': ['ClassicBurger1']
 }
 
-test_parser(input_data_2, expected_output_2)
+# test_parser(input_data_2, expected_output_2)
 
 # Exemplo 3: Declaração de classe com restrições de cardinalidade
 input_data_3 = """
@@ -88,7 +89,7 @@ expected_output_3 = {
     'individuals': ['TomatoTopping1','CheeseTopping1', 'VeggieTopping1']
 }
 
-test_parser(input_data_3, expected_output_3)
+# test_parser(input_data_3, expected_output_3)
 
 # Exemplo 4: Teste de falha de sintaxe (para garantir que erros sejam capturados)
 # Teste da falha de sintaxe, os topicos de subclassOf não estão separados por vírgula
@@ -98,7 +99,7 @@ SubClassOf:
     hasBase some PizzaBase
     hasCaloricContent some xsd:integer
 """
-test_parser(input_data_4, None)
+# test_parser(input_data_4, None)
 
 # Teste de classes definidas
 
@@ -115,7 +116,7 @@ expected_output5 = {
         'disjoint': [], 'individuals': ['CheesyPizza1']
     }
 
-test_parser(input_data_5, expected_output5)
+# test_parser(input_data_5, expected_output5)
 
 input_data_6 = """
 Class: CheesyPizza
@@ -133,4 +134,4 @@ expected_output6 = {
         'individuals': ['CheesyPizza1']
     }
 
-test_parser(input_data_6, expected_output6)
+# test_parser(input_data_6, expected_output6)

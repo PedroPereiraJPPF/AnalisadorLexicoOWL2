@@ -53,6 +53,7 @@ def p_subclass_section(p):
                         | SUBCLASSOF nested_property_list
                         | SUBCLASSOF property_list
                         | SUBCLASSOF class_name_list_or'''
+    
     if len(p) == 4:
         p[0] = {
             'properties': p[2],
@@ -74,11 +75,16 @@ def p_individual_section(p):
     p[0] = p[2] if len(p) > 2 else []
 
 def p_property_list(p):
-    '''property_list : property_list COMMA property
+    '''property_list : property_list COMMA LEFTPAREN property RIGHTPAREN
+                     | property_list COMMA property
                      | property
                      | CLASSNAME'''
+    print(len(p))
+
     if len(p) == 4:
         p[0] = p[1] + [p[3]]
+    elif len(p) == 6:
+        p[0] = p[1] + [p[4]]
     else:
         p[0] = [p[1]]
         
@@ -95,6 +101,7 @@ def p_nested_property_list(p):
                             | nested_property_list COMMA LEFTPAREN nested_property RIGHTPAREN OR LEFTPAREN nested_property RIGHTPAREN
                             | LEFTPAREN nested_property RIGHTPAREN
                             | CLASSNAME'''
+
     if len(p) == 6:
         p[0] = p[1] + [p[4]]
     elif len(p) == 10:
@@ -107,6 +114,8 @@ def p_nested_property_list(p):
 def p_nested_closure_list(p):
     '''nested_closure_list : nested_closure_list COMMA LEFTPAREN closure RIGHTPAREN
                            | COMMA LEFTPAREN closure RIGHTPAREN'''
+    
+    
     if len(p) == 6:
         p[0] = p[1] + [p[4]]
     elif len(p) == 5:
@@ -136,7 +145,10 @@ def p_property(p):
                 | PROPERTY SOME NAMESPACE DATATYPE
                 | PROPERTY SOME NAMESPACE DATATYPE LEFTBRACKET GREATEROREQUAL CARDINALITY RIGHTBRACKET
                 | PROPERTY MIN CARDINALITY CLASSNAME
-                | PROPERTY MAX CARDINALITY CLASSNAME'''
+                | PROPERTY MAX CARDINALITY CLASSNAME
+                | PROPERTY SOME LEFTPAREN property RIGHTPAREN
+                | LEFTPAREN property RIGHTPAREN
+                | property OR LEFTPAREN property RIGHTPAREN'''
     if len(p) == 9:
         p[0] = f"{p[1]} some {p[3]}{p[4]}[{p[6]}{p[7]}]"
     elif len(p) == 6:
