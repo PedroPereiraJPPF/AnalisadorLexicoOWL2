@@ -23,6 +23,7 @@ reserved = {
     'individuals:': 'INDIVIDUALS',
     'subclassof:': 'SUBCLASSOF',
     'disjointclasses:': 'DISJOINTCLASSES',
+    'disjointwith:' : 'DISJOINTWITH'
 }
 
 # Regex para identificar palavras reservadas
@@ -37,7 +38,7 @@ reserved_regex = r'\b([sS][oO][mM][eE])|' \
                  r'([aA][nN][dD])|' \
                  r'([oO][rR])\b|' \
                  r'([oO][nN][lL][yY])|' \
-                 r'(Class:|EquivalentTo:|Individuals:|SubClassOf:|DisjointClasses:)'
+                 r'(Class:|EquivalentTo:|Individuals:|SubClassOf:|DisjointClasses:|DisjointWith:)'
 
 # Símbolos especiais
 special_symbols = {
@@ -88,7 +89,14 @@ tokens = [
     'RIGHTBRACKET',
     'LEFTBRACE',
     'RIGHTBRACE',
-    'GREATEROREQUAL'
+    'GREATEROREQUAL',
+    'EXACTLY',
+    'SOME',
+    'ALL',
+    'VALUE',
+    'NOT',
+    'THAT',
+    'DISJOINTWITH'
 ]
 
 
