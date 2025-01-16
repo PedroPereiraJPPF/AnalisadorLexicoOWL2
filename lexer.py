@@ -27,17 +27,17 @@ reserved = {
 }
 
 # Regex para identificar palavras reservadas
-reserved_regex = r'\b([sS][oO][mM][eE])|' \
-                 r'([aA][lL][lL])|' \
-                 r'([vV][aA][lL][uU][eE])|' \
-                 r'([mM][iI][nN])|' \
-                 r'([mM][aA][xX])|' \
-                 r'([eE][xX][aA][cC][tT][lL][yY])|' \
-                 r'([tT][hH][aA][tT])|' \
-                 r'([nN][oO][tT])|' \
-                 r'([aA][nN][dD])|' \
+reserved_regex = r'\b([sS][oO][mM][eE])\b|' \
+                 r'([aA][lL][lL])\b|' \
+                 r'([vV][aA][lL][uU][eE])\b|' \
+                 r'([mM][iI][nN])\b|' \
+                 r'([mM][aA][xX])\b|' \
+                 r'([eE][xX][aA][cC][tT][lL][yY])\b|' \
+                 r'([tT][hH][aA][tT])\b|' \
+                 r'([nN][oO][tT])\b|' \
+                 r'([aA][nN][dD])\b|' \
                  r'([oO][rR])\b|' \
-                 r'([oO][nN][lL][yY])|' \
+                 r'([oO][nN][lL][yY])\b|' \
                  r'(Class:|EquivalentTo:|Individuals:|SubClassOf:|DisjointClasses:|DisjointWith:)'
 
 # Símbolos especiais
@@ -129,6 +129,7 @@ def t_INDIVIDUAL(t):
 
 def t_CLASSNAME(t):
     r'[A-Z][a-zA-Z]*_?[A-Za-z]*'
+    
     return t
 
 def t_PROPERTY(t):
