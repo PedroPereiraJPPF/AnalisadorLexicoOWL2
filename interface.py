@@ -2,6 +2,7 @@ import lexer
 import parser
 
 from lexer import errors
+from parser import parser
 from lexer import lexer
 
 
@@ -55,24 +56,7 @@ def read_file(file_path):
         return ""
 
 def main(file_path):
-    # try:
-    #     result = lexer.analyze_file(file_path)
-    #     display_symbol_table(result)
-    #     display_errors()
-    # except FileNotFoundError:
-    #     print(RED + f"Arquivo '{file_path}' não encontrado." + RESET)
-    entrada = """
-    Class: CheesyPizza
-    EquivalentTo:
-    Pizza and (hasTopping some CheeseTopping)
-    Individuals:
-    CheesyPizza1
-
-    Class: HighCaloriePizza
-    EquivalentTo:
-    Pizza and (hasCaloricContent some xsd:integer)
-    """
-    
+    entrada = read_file(file_path)
     result = parser.parse(entrada, lexer=lexer)
 
 if __name__ == '__main__':

@@ -91,7 +91,6 @@ tokens = [
     'RIGHTBRACE',
     'GREATEROREQUAL',
     'EXACTLY',
-    'SOME',
     'ALL',
     'VALUE',
     'NOT',

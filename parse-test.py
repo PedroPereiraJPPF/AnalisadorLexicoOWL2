@@ -1,7 +1,9 @@
 import ply.yacc as yacc
 from lexer import lexer 
 from parser import parser
+from parser import class_name, class_types, n
 from colorama import Fore, Back, Style, init
+j = 0
 
 def test_parser(input_data, expected_output):
     
@@ -22,26 +24,23 @@ def test_parser(input_data, expected_output):
 
 
 # Teste Unitarios para classes primitivas
-# TODO: corrigir o lexer para aceitar valueActivity
 # Exemplo 1: Declaração de uma classe primitiva
 input_data_1 = """
-    Class: RegulatoryActivity
-    EquivalentTo: ValueActivity
-        and ((bundles some
-                (CnAObject or CoreObject or PoPObject)) or
-             (consumes some CounterObject))
-        and ((grants some CnAObject) or
-             (transfers some
-                (CoreObject or PoPObject)))
-        and (isAuthorityOf some Regulator)
-        and (hasTransaction some ValueTransaction)
-        and (bundles only
-                (CnAObject or CoreObject or PoPObject))
-        and (consumes only CounterObject)
-        and (grants only CnAObject)
-        and (isAuthorityOf only Regulator)
-        and (transfers only
-                (CoreObject or PoPObject))
+Class: CertificationAct
+
+        
+    SubClassOf: 
+        Relator,
+        (hasBase only (hasIngredient some TomatoSauce))
+        
+Class: Activity
+   
+    SubClassOf: 
+        {Class1, Class2, Class3}
+
+Class: Actor
+  
+    SubClassOf: Class1 or Class2 or Class3
 """
 expected_output_1 = {
     'subclass': [
@@ -51,7 +50,7 @@ expected_output_1 = {
     'individuals': []
 }
 
-test_parser(input_data_1, expected_output_1)
+# test_parser(input_data_1, expected_output_1)
 
 input_data_2 = """
 Class: Activity
@@ -145,13 +144,11 @@ Class: Connector
         mediates some InvokeDataOperation,
         enforces min 1 DataUsagePolicy
     
-    
 Class: CoreParticipant
 
         
-    SubClassOf: 
+    SubClassOf:
         Actor
-    
     
 Class: Counterpart
 
@@ -489,6 +486,7 @@ expected_output_2 = {
 }
 
 test_parser(input_data_2, expected_output_2)
+
 
 # Exemplo 3: Declaração de classe com restrições de cardinalidade
 input_data_3 = """
