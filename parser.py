@@ -153,7 +153,7 @@ def p_property(p):
                 | PROPERTY keyword_property LEFTPAREN class_name_list_or RIGHTPAREN
                 | PROPERTY keyword_property DATATYPE
                 | PROPERTY keyword_property NAMESPACE DATATYPE
-                | PROPERTY keyword_property NAMESPACE DATATYPE LEFTBRACKET GREATEROREQUAL CARDINALITY RIGHTBRACKET
+                | PROPERTY keyword_property NAMESPACE DATATYPE LEFTBRACKET comparator_operator CARDINALITY RIGHTBRACKET
                 | PROPERTY keyword_restrict CARDINALITY CLASSNAME
                 | PROPERTY keyword_property LEFTPAREN property RIGHTPAREN
                 | LEFTPAREN property RIGHTPAREN
@@ -208,7 +208,15 @@ def p_keyword_property(p):
     if p[1] == "only" and parser.symstack[-2].value == '(':
         if ", com Axioma de Fechamento" not in class_types[n]:
             class_types[n].append(", com Axioma de Fechamento")
-            
+
+def p_comparator_operator(p):
+    '''comparator_operator : GREATEROREQUAL
+                           | LESSOREQUAL
+                           | LESSTHAN
+                           | GREATERTHAN
+                           | EQUAL
+    '''
+    p[0] = p[1]
 
 def p_class_name_list_or(p):
     '''class_name_list_or : class_name_list_or OR CLASSNAME
