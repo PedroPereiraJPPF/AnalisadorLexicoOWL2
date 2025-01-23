@@ -57,50 +57,50 @@ special_symbols = {
 }
 
 # Tokens
-# tokens = [
-#     'CLASSNAME', 'PROPERTY', 'INDIVIDUAL', 'NAMESPACE',
-#     'DATATYPE', 'CARDINALITY', 'SPECIALSYMBOL', 'KEYWORD'
-# ] + list(reserved.values()) + list(special_symbols.values())
-
 tokens = [
-    'CLASSNAME',   
-    'PROPERTY',   
-    'INDIVIDUAL',
-    'DATATYPE',
-    'EQUIVALENTTO',
+    'CLASSNAME', 'PROPERTY', 'INDIVIDUAL', 'NAMESPACE',
+    'DATATYPE', 'CARDINALITY', 'SPECIALSYMBOL', 'KEYWORD'
+] + list(reserved.values()) + list(special_symbols.values())
+
+# tokens = [
+#     'CLASSNAME',   
+#     'PROPERTY',   
+#     'INDIVIDUAL',
+#     'DATATYPE',
+#     'EQUIVALENTTO',
     
-    # Palavras reservadas
-    'SOME',
-    'CLASS',       
-    'INDIVIDUALS', 
-    'SUBCLASSOF',
-    'DISJOINTCLASSES',
-    'COMMA',
-    'NAMESPACE',
-    'MIN',
-    'MAX',
-    'CARDINALITY',
-    'AND',
-    'OR',
-    'ONLY',
-    'LEFTPAREN',
-    'RIGHTPAREN',
-    'LEFTBRACKET',
-    'RIGHTBRACKET',
-    'LEFTBRACE',
-    'RIGHTBRACE',
-    'GREATEROREQUAL',
-    'LESSOREQUAL',
-    'LESSTHAN',
-    'GREATERTHAN',
-    'EQUAL',
-    'EXACTLY',
-    'ALL',
-    'VALUE',
-    'NOT',
-    'THAT',
-    'DISJOINTWITH'
-]
+#     # Palavras reservadas
+#     'SOME',
+#     'CLASS',       
+#     'INDIVIDUALS', 
+#     'SUBCLASSOF',
+#     'DISJOINTCLASSES',
+#     'COMMA',
+#     'NAMESPACE',
+#     'MIN',
+#     'MAX',
+#     'CARDINALITY',
+#     'AND',
+#     'OR',
+#     'ONLY',
+#     'LEFTPAREN',
+#     'RIGHTPAREN',
+#     'LEFTBRACKET',
+#     'RIGHTBRACKET',
+#     'LEFTBRACE',
+#     'RIGHTBRACE',
+#     'GREATEROREQUAL',
+#     'LESSOREQUAL',
+#     'LESSTHAN',
+#     'GREATERTHAN',
+#     'EQUAL',
+#     'EXACTLY',
+#     'ALL',
+#     'VALUE',
+#     'NOT',
+#     'THAT',
+#     'DISJOINTWITH'
+# ]
 
 
 # Ignorar espaços em branco

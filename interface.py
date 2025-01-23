@@ -5,7 +5,6 @@ from lexer import errors
 from parser import parser
 from lexer import lexer
 
-
 # Cores para o terminal
 RESET = "\u001B[0m"
 RED = "\u001B[31m"
@@ -22,18 +21,6 @@ def display_symbol_table(symbol_table):
     print(BLUE + separator + RESET)
     print(GREEN + "Tabela de Símbolos:" + RESET)
     print(BLUE + separator + RESET)
-
-    # for category, items in symbol_table.items():
-    #     print(f"\n{CYAN}{category.capitalize()}:{RESET}")
-    #     print(CYAN + "-" * (len(category) + 10) + RESET)
-
-    #     if items:
-    #         for lexeme, count in items.items():
-    #             print(f"{PURPLE}\tLexema: {RESET}{lexeme}")
-    #             print(f"{CYAN}\t\tOcorrências: {count}{RESET}")
-    #         print(YELLOW + "\t" + "-" * 30 + RESET)
-    #     else:
-    #         print(f"{RED}\tNenhum lexema encontrado para esta categoria.{RESET}")
     
     for items in symbol_table:
         print(items)

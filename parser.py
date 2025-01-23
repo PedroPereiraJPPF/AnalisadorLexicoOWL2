@@ -6,6 +6,7 @@ classes = {}
 class_name = []
 class_types = [[]]
 n = 0
+errors = {}
 
 def p_ontology(p):
     '''ontology : ontology class_declaration 
@@ -26,11 +27,11 @@ def p_class_declaration(p):
     
     # Print e Manutenção
     global class_name, class_types, n
-    print(f"{n+1} - Classificação da Classe:", end=" ")
-    print(class_name[n])
-    for i in range(len(class_types[n])):
-        print(class_types[n].pop(), end=" \b")
-    print("\n.")
+
+    print(f"{n+1} - Classificação da Classe: {class_name[n]}")
+
+    classificacao = ' '.join(reversed(class_types[n]))
+    print(f"{classificacao}\n.")
 
 def p_defined_class_declaration(p):
     '''defined_class_declaration : CLASS CLASSNAME equivalentTo_section subclass_section disjoint_section individual_section
@@ -53,6 +54,16 @@ def p_defined_class_declaration(p):
     class_name.append(p[2])
     class_types[n].append("Classe Definida")
 
+def p_defined_class_declaration_error(p):
+    '''defined_class_declaration : CLASS error equivalentTo_section subclass_section disjoint_section individual_section
+    '''
+
+    global class_name, class_types, n
+    class_name.append(p[2].value)
+    class_types[n].append("Classe Definida")
+
+    print(f"Erro de sintaxe na linha {p[2].lineno}: Nome de classe não encontrado")
+
 def p_primitive_class_declaration(p):
     '''primitive_class_declaration : CLASS CLASSNAME subclass_section disjoint_section individual_section'''
     classes[p[2]] = {
@@ -64,6 +75,16 @@ def p_primitive_class_declaration(p):
     global class_name, class_types, n
     class_name.append(p[2])
     class_types[n].append("Classe Primitiva")
+
+def p_primitive_class_declaration_error(p):
+    ''' primitive_class_declaration : CLASS error subclass_section disjoint_section individual_section
+    '''
+
+    global class_name, class_types, n
+    class_name.append(p[2].value)
+    class_types[n].append("Classe Primitiva")
+
+    print(f"Erro de sintaxe na linha {p[2].lineno}: Nome de classe não encontrado")
 
 def p_equivalentTo_section(p):
     '''equivalentTo_section : EQUIVALENTTO CLASSNAME AND defined_property_list
