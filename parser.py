@@ -5,6 +5,11 @@ from lexer import tokens
 classes = {}
 class_name = []
 class_types = [[]]
+property_type = {
+    'dataproperty': [],
+    'objectproperty': []
+}
+
 n = 0
 errors = {}
 
@@ -57,16 +62,6 @@ def p_defined_class_declaration(p):
     class_name.append(p[2])
     class_types[n].append("Classe Definida")
 
-# def p_defined_class_declaration_error(p):
-#     '''defined_class_declaration : CLASS error equivalentTo_section subclass_section disjoint_section individual_section
-#     '''
-
-#     global class_name, class_types, n
-#     class_name.append(p[2].value)
-#     class_types[n].append("Classe Definida")
-
-#     print(f"Erro de sintaxe na linha {p[2].lineno}: Nome de classe não encontrado")
-
 def p_primitive_class_declaration(p):
     '''primitive_class_declaration : CLASS CLASSNAME subclass_section disjoint_section individual_section'''
     classes[p[2]] = {
@@ -81,16 +76,6 @@ def p_primitive_class_declaration(p):
         exit(1)
     class_name.append(p[2])
     class_types[n].append("Classe Primitiva")
-
-# def p_primitive_class_declaration_error(p):
-#     ''' primitive_class_declaration : CLASS error subclass_section disjoint_section individual_section
-#     '''
-
-#     global class_name, class_types, n
-#     class_name.append(p[2].value)
-#     class_types[n].append("Classe Primitiva")
-
-#     print(f"Erro de sintaxe na linha {p[2].lineno}: Nome de classe não encontrado")
 
 def p_equivalentTo_section(p):
     '''equivalentTo_section : EQUIVALENTTO CLASSNAME AND defined_property_list
@@ -189,30 +174,25 @@ def p_property(p):
                 | property AND property
                 | property ONLY property
                 | property ONLY LEFTPAREN property RIGHTPAREN
-                | PROPERTY PROPERTY keyword_property CLASSNAME 
-                | PROPERTY PROPERTY keyword_restrict CARDINALITY CLASSNAME'''
+    '''
     
     global class_types, n
-    
-    if len(p) == 9:
-        p[0] = f"{p[1]} some {p[3]}{p[4]}[{p[6]}{p[7]}]"
-    elif len(p) == 6:
+
+    if len(p) == 6:
         if (p[3] == "("):
             if ", Aninhada" not in class_types[n]:
                 class_types[n].append(", Aninhada")
-        p[0] = f"{p[1]} some ({p[4]})"
     elif len(p) == 4:
+        print(p[3])
+
+        if p[3][0].isupper():
+            property_type['objectproperty'].append(p[1])
+        else:
+            property_type['dataproperty'].append(p[1])
+
         if (p[3] == "("):
             if ", Aninhada" not in class_types[n]:
                 class_types[n].append(", Aninhada") 
-        p[0] = f"{p[1]} some {p[3]}"
-    else: 
-        if (p[2] == 'min'):
-            p[0] = f"{p[1]} min {p[3]} {p[4]}"
-        elif (p[2] == 'max'):
-            p[0] = f"{p[1]} max {p[3]} {p[4]}"
-        else: 
-            p[0] = f"{p[1]} some {p[3]}{p[4]}"
 
 def p_namespace_section(p):
     '''namespace_section : XSD XSD_NUM_DATATYPES LEFTBRACKET comparator_operator CARDINALITY RIGHTBRACKET
@@ -221,6 +201,8 @@ def p_namespace_section(p):
                         | RDF RDF_DATATYPES
                         | RDFS RDFS_DATATYPES
                         | OWL OWL_DATATYPES LEFTBRACKET comparator_operator CARDINALITY RIGHTBRACKET'''
+    
+    p[0] = f"{p[1]}"
 
 def p_datatype_section(p):
     '''datatype_section : XSD_NUM_DATATYPES LEFTBRACKET comparator_operator CARDINALITY RIGHTBRACKET
@@ -229,6 +211,8 @@ def p_datatype_section(p):
                         | RDF_DATATYPES
                         | RDFS_DATATYPES
                         | OWL_DATATYPES LEFTBRACKET comparator_operator CARDINALITY RIGHTBRACKET'''
+    
+    p[0] = f"{p[1]}"
 
 def p_keyword_restrict(p):
     '''keyword_restrict : MAX

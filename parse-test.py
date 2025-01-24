@@ -3,6 +3,7 @@ from lexer import lexer
 from parser import parser
 from colorama import Fore, Back, Style, init
 j = 0
+from parser import property_type
 
 def test_parser(input_data, expected_output):
     
@@ -49,3 +50,5 @@ Class: Actor
 """
 
 test_parser(input_data_1, "")
+
+print(property_type)
