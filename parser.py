@@ -51,18 +51,21 @@ def p_defined_class_declaration(p):
         }
         
     global class_name, class_types, n
+    if p[2] in class_name:
+        print(f"Erro: Classe {p[2]} já foi definida")
+        exit(1)
     class_name.append(p[2])
     class_types[n].append("Classe Definida")
 
-def p_defined_class_declaration_error(p):
-    '''defined_class_declaration : CLASS error equivalentTo_section subclass_section disjoint_section individual_section
-    '''
+# def p_defined_class_declaration_error(p):
+#     '''defined_class_declaration : CLASS error equivalentTo_section subclass_section disjoint_section individual_section
+#     '''
 
-    global class_name, class_types, n
-    class_name.append(p[2].value)
-    class_types[n].append("Classe Definida")
+#     global class_name, class_types, n
+#     class_name.append(p[2].value)
+#     class_types[n].append("Classe Definida")
 
-    print(f"Erro de sintaxe na linha {p[2].lineno}: Nome de classe não encontrado")
+#     print(f"Erro de sintaxe na linha {p[2].lineno}: Nome de classe não encontrado")
 
 def p_primitive_class_declaration(p):
     '''primitive_class_declaration : CLASS CLASSNAME subclass_section disjoint_section individual_section'''
@@ -73,18 +76,21 @@ def p_primitive_class_declaration(p):
     }
     
     global class_name, class_types, n
+    if p[2] in class_name:
+        print(f"Erro: Classe {p[2]} já foi definida")
+        exit(1)
     class_name.append(p[2])
     class_types[n].append("Classe Primitiva")
 
-def p_primitive_class_declaration_error(p):
-    ''' primitive_class_declaration : CLASS error subclass_section disjoint_section individual_section
-    '''
+# def p_primitive_class_declaration_error(p):
+#     ''' primitive_class_declaration : CLASS error subclass_section disjoint_section individual_section
+#     '''
 
-    global class_name, class_types, n
-    class_name.append(p[2].value)
-    class_types[n].append("Classe Primitiva")
+#     global class_name, class_types, n
+#     class_name.append(p[2].value)
+#     class_types[n].append("Classe Primitiva")
 
-    print(f"Erro de sintaxe na linha {p[2].lineno}: Nome de classe não encontrado")
+#     print(f"Erro de sintaxe na linha {p[2].lineno}: Nome de classe não encontrado")
 
 def p_equivalentTo_section(p):
     '''equivalentTo_section : EQUIVALENTTO CLASSNAME AND defined_property_list
@@ -172,9 +178,8 @@ def p_individual_list(p):
 def p_property(p):
     '''property : PROPERTY keyword_property CLASSNAME
                 | PROPERTY keyword_property LEFTPAREN class_name_list_or RIGHTPAREN
-                | PROPERTY keyword_property DATATYPE
-                | PROPERTY keyword_property NAMESPACE DATATYPE
-                | PROPERTY keyword_property NAMESPACE DATATYPE LEFTBRACKET comparator_operator CARDINALITY RIGHTBRACKET
+                | PROPERTY keyword_property datatype_section
+                | PROPERTY keyword_property namespace_section
                 | PROPERTY keyword_restrict CARDINALITY CLASSNAME
                 | PROPERTY keyword_property LEFTPAREN property RIGHTPAREN
                 | LEFTPAREN property RIGHTPAREN
@@ -185,7 +190,7 @@ def p_property(p):
                 | property ONLY property
                 | property ONLY LEFTPAREN property RIGHTPAREN
                 | PROPERTY PROPERTY keyword_property CLASSNAME 
-                | PROPERTY PROPERTY keyword_restrict CARDINALITY CLASSNAME '''
+                | PROPERTY PROPERTY keyword_restrict CARDINALITY CLASSNAME'''
     
     global class_types, n
     
@@ -208,6 +213,22 @@ def p_property(p):
             p[0] = f"{p[1]} max {p[3]} {p[4]}"
         else: 
             p[0] = f"{p[1]} some {p[3]}{p[4]}"
+
+def p_namespace_section(p):
+    '''namespace_section : XSD XSD_NUM_DATATYPES LEFTBRACKET comparator_operator CARDINALITY RIGHTBRACKET
+                        | XSD XSD_NUM_DATATYPES
+                        | XSD XSD_OTHER_DATATYPES
+                        | RDF RDF_DATATYPES
+                        | RDFS RDFS_DATATYPES
+                        | OWL OWL_DATATYPES LEFTBRACKET comparator_operator CARDINALITY RIGHTBRACKET'''
+
+def p_datatype_section(p):
+    '''datatype_section : XSD_NUM_DATATYPES LEFTBRACKET comparator_operator CARDINALITY RIGHTBRACKET
+                        | XSD_NUM_DATATYPES
+                        | XSD_OTHER_DATATYPES
+                        | RDF_DATATYPES
+                        | RDFS_DATATYPES
+                        | OWL_DATATYPES LEFTBRACKET comparator_operator CARDINALITY RIGHTBRACKET'''
 
 def p_keyword_restrict(p):
     '''keyword_restrict : MAX

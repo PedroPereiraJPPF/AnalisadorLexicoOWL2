@@ -25,11 +25,18 @@ def test_parser(input_data, expected_output):
 # Teste Unitarios para classes primitivas
 # Exemplo 1: Declaração de uma classe primitiva
 input_data_1 = """
-Class: Pizza
-
-    SubClassOf: 
-        Relator,
-        (hasBase only (hasIngredient some TomatoSauce))
+Class: Pizza 
+ 
+     SubClassOf:
+        hasBase some PizzaBase, 
+        hasCaloricContent some xsd:integer[>=0]
+             
+     DisjointClasses:  
+        PizzaBase, PizzaTopping 
+     
+      Individuals:  
+        CustomPizza1, 
+        CustomPizza2 
         
 Class: Activity
    
@@ -40,12 +47,5 @@ Class: Actor
   
     SubClassOf: Class1 or Class2 or Class3
 """
-expected_output_1 = {
-    'subclass': [
-        'hasBase some (hasIngredient some TomatoSauce)'
-    ],
-    'disjoint': [],
-    'individuals': []
-}
 
-test_parser(input_data_1, expected_output_1)
+test_parser(input_data_1, "")

@@ -26,6 +26,66 @@ reserved = {
     'disjointwith:' : 'DISJOINTWITH'
 }
 
+namespaces = {
+    'owl:': 'OWL',
+    'rdf:': 'RDF',
+    'rdfs:': 'RDFS',
+    'xsd:': 'XSD'
+}
+
+xsd_numerical_types = {
+    'byte': 'BYTE',
+    'decimal': 'DECIMAL',
+    'double': 'DOUBLE',
+    'float': 'FLOAT',
+    'integer': 'INTEGER',
+    'int': 'INT',
+    'long': 'LONG',
+    'negativeInteger': 'NEGATIVEINTEGER',
+    'nonNegativeInteger': 'NONNEGATIVEINTEGER',
+    'nonPositiveInteger': 'NONPOSITIVEINTEGER',
+    'positiveInteger': 'POSITIVEINTEGER',
+    'short': 'SHORT',
+    'unsignedByte': 'UNSIGNEDBYTE',
+    'unsignedInt': 'UNSIGNEDINT',
+    'unsignedLong': 'UNSIGNEDLONG',
+    'unsignedShort': 'UNSIGNEDSHORT',
+}
+
+xsd_other_types = {
+    'anyURI': 'ANYURI',
+    'base64Binary': 'BASE64BINARY',
+    'boolean': 'BOOLEAN',
+    'dateTime': 'DATETIME',
+    'dateTimeStamp': 'DATETIMESTAMP',
+    'gDay': 'GDAY',
+    'gMonth': 'GMONTH',
+    'gMonthDay': 'GMONTHDAY',
+    'gYear': 'GYEAR',
+    'gYearMonth': 'GYEARMONTH',
+    'hexBinary': 'HEXBINRARY',
+    'language': 'LANGUAGE',
+    'NMTOKEN': 'NMTOKEN',
+    'normalizedString': 'NORMALIZEDSTRING',
+    'string': 'STRING',
+    'token': 'TOKEN',
+}
+
+rdf_types = {
+    'langString': 'LANGSTRING',
+    'PlainLiteral': 'PLAINLITERAL',
+    'XMLLiteral': 'XMLLITERAL'
+}
+
+rdfs_types = {
+    'Literal': 'LITERAL'
+}
+
+owl_types = {
+    'rational': 'RATIONAL',
+    'real': 'REAL'
+}
+
 # Regex para identificar palavras reservadas
 reserved_regex = r'\b([sS][oO][mM][eE])\b|' \
                  r'([aA][lL][lL])\b|' \
@@ -59,8 +119,10 @@ special_symbols = {
 # Tokens
 tokens = [
     'CLASSNAME', 'PROPERTY', 'INDIVIDUAL', 'NAMESPACE',
-    'DATATYPE', 'CARDINALITY', 'SPECIALSYMBOL', 'KEYWORD'
-] + list(reserved.values()) + list(special_symbols.values())
+    'XSD_NUM_DATATYPES', 'XSD_OTHER_DATATYPES', 
+    'RDF_DATATYPES', 'RDFS_DATATYPES', 'OWL_DATATYPES',
+    'CARDINALITY', 'SPECIALSYMBOL', 'KEYWORD'
+] + list(reserved.values()) + list(special_symbols.values()) + list(namespaces.values())
 
 # tokens = [
 #     'CLASSNAME',   
@@ -113,11 +175,27 @@ def t_reserved_variant(t):
 
 def t_NAMESPACE(t):
     r'(owl:|rdf:|xsd:|rdfs:)'
-    t.type='NAMESPACE'
+    t.type=namespaces.get(t.value.lower())
     return t
 
-def t_DATATYPE(t):
-    r'(anyURI|base64Binary|boolean|byte|dateTime|dateTimeStamp|decimal|double|float|gDay|gMonth|gMonthDay|gYear|gYearMonth|hexBinary|integer|int|language|long|negativeInteger|NMTOKEN|nonNegativeInteger|nonPositiveInteger|normalizedString|positiveInteger|short|string|token|unsignedByte|unsignedInt|unsignedLong|unsignedShort)'
+def t_XSD_NUM_DATATYPES(t):
+    r'(integer|int|long|negativeInteger|nonNegativeInteger|nonPositiveInteger|positiveInteger|short|unsignedByte|unsignedInt|unsignedLong|unsignedShort)'
+    return t
+
+def t_XSD_OTHER_DATATYPES(t):
+    r'(anyURI|base64Binary|boolean|dateTime|dateTimeStamp|gDay|gMonth|gMonthDay|gYear|gYearMonth|hexBinary|language|NMTOKEN|normalizedString|string|token)'
+    return t
+
+def t_RDF_DATATYPES(t):
+    r'(langString|PlainLiteral|XMLLiteral)'
+    return t
+
+def t_RDFS_DATATYPES(t):
+    r'(Literal)'
+    return t
+
+def t_OWL_DATATYPES(t):
+    r'(rational|real)'
     return t
 
 def t_special_symbols(t):
