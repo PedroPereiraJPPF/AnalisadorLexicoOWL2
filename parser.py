@@ -29,24 +29,25 @@ def p_class_declaration(p):
     '''class_declaration : primitive_class_declaration 
                            | defined_class_declaration'''
     p[0] = p[1]
-    
-    # Print e Manutenção
-    global class_name, class_types, n
 
-    print(f"{n+1} - Classificação da Classe: {class_name[n]}")
-
-    classificacao = ' '.join(reversed(class_types[n]))
-    print(f"{classificacao}\n.")
+    # print(p[0])
 
 def p_defined_class_declaration(p):
     '''defined_class_declaration : CLASS CLASSNAME equivalentTo_section subclass_section disjoint_section individual_section
                                    | CLASS CLASSNAME equivalentTo_section disjoint_section individual_section'''   
+    
     if len(p) == 6:
         classes[p[2]] = {
             'equivalentTo': p[3],
             'disjoint': p[4],
             'individuals': p[5]
         }
+
+        p[0] = {p[2]: [
+            p[3],
+            p[4],
+            p[5]
+        ]}
     else:
         classes[p[2]] = {
             'equivalentTo': p[3],
@@ -54,28 +55,28 @@ def p_defined_class_declaration(p):
             'disjoint': p[5],
             'individuals': p[6]
         }
-        
-    global class_name, class_types, n
-    if p[2] in class_name:
-        print(f"Erro: Classe {p[2]} já foi definida")
-        exit(1)
-    class_name.append(p[2])
-    class_types[n].append("Classe Definida")
+
+        p[0] = {p[2]: [
+            p[3],
+            p[4],
+            p[5],
+            p[6]
+        ]}
 
 def p_primitive_class_declaration(p):
     '''primitive_class_declaration : CLASS CLASSNAME subclass_section disjoint_section individual_section'''
+    
     classes[p[2]] = {
         'subclass': p[3],
         'disjoint': p[4],
         'individuals': p[5]
     }
-    
-    global class_name, class_types, n
-    if p[2] in class_name:
-        print(f"Erro: Classe {p[2]} já foi definida")
-        exit(1)
-    class_name.append(p[2])
-    class_types[n].append("Classe Primitiva")
+
+    p[0] = {p[2]: [
+        {"Subclass:": p[3]},
+        {"Disjoint:": p[4]},
+        {"Individual:": p[5]}
+    ]}
 
 def p_equivalentTo_section(p):
     '''equivalentTo_section : EQUIVALENTTO CLASSNAME AND defined_property_list
@@ -85,10 +86,10 @@ def p_equivalentTo_section(p):
     if len(p) == 3:
         p[0] = p[2]
     else:
-        if p[2] == '{':
-            p[0] = p[3]
+        if isinstance(p[4], list):
+            p[0] =  [p[2], p[3]] + p[4]
         else:
-            p[0] = p[4]
+            p[0] = [p[2]] + p[3] + [p[4]]
         
 
 def p_subclass_section(p):
@@ -100,10 +101,11 @@ def p_subclass_section(p):
     if len(p) == 3:
         p[0] = p[2]
     else:
-        if p[2] == '[':
-            p[0] = p[3]
+        if isinstance(p[3], list):
+            p[0] = [p[2]] + p[3] + [p[4]]
         else:
-            p[0] = p[4]
+            p[0] = [p[2], p[3]] + p[4]
+    
         
 
 def p_disjoint_section(p):
@@ -122,11 +124,14 @@ def p_property_list(p):
                      | property_list COMMA property
                      | property'''
     if len(p) == 4:
-        p[0] = p[1] + [p[3]]
+        p[0] = p[1] + [p[2]] + p[3]
     elif len(p) == 6:
-        p[0] = p[1] + [p[4]]
+        if isinstance(p[4], list):
+            p[0] = p[1] + [p[2], p[3]] + p[4] + [p[5]]
+        else:
+            p[0] = p[1] + [p[2], p[3], p[4], p[5]]
     else:
-        p[0] = [p[1]]
+        p[0] = p[1]
 
 def p_defined_property_list(p):
     '''defined_property_list : defined_property_list AND LEFTPAREN property RIGHTPAREN
@@ -134,11 +139,11 @@ def p_defined_property_list(p):
                              | property'''
             
     if len(p) == 4:
-        p[0] = p[1] + [p[3]]
+        p[0] = p[1] + [p[2], p[3]]
     elif len(p) == 6:
-        p[0] = p[1] + [p[4]]
+        p[0] = p[1] + [p[2], p[3], p[4], p[5]]
     else:
-        p[0] = [p[1]]
+        p[0] = p[1]
 
 def p_class_list(p):
     '''class_list : class_list COMMA CLASSNAME
@@ -152,7 +157,7 @@ def p_individual_list(p):
     '''individual_list : individual_list COMMA INDIVIDUAL
                        | INDIVIDUAL'''    
     if len(p) == 4:
-        p[0] = p[1] + [p[3]]
+        p[0] = p[1] + [p[2], p[3]]
     else:
         p[0] = [p[1]]
         
@@ -162,47 +167,51 @@ def p_individual_list(p):
 
 def p_property(p):
     '''property : PROPERTY keyword_property CLASSNAME
-                | PROPERTY keyword_property LEFTPAREN class_name_list_or RIGHTPAREN
                 | PROPERTY keyword_property datatype_section
                 | PROPERTY keyword_property namespace_section
+                | LEFTPAREN property RIGHTPAREN
                 | PROPERTY keyword_restrict CARDINALITY CLASSNAME
                 | PROPERTY keyword_property LEFTPAREN property RIGHTPAREN
-                | LEFTPAREN property RIGHTPAREN
-                | property OR property
-                | property OR LEFTPAREN property RIGHTPAREN
-                | property AND LEFTPAREN property RIGHTPAREN
-                | property AND property
-                | property ONLY property
-                | property ONLY LEFTPAREN property RIGHTPAREN
+                | PROPERTY keyword_property LEFTPAREN class_name_list_or RIGHTPAREN
     '''
     
     global class_types, n
 
     if len(p) == 6:
+        p[0] = [p[1], p[2], p[3]] + p[4] + [p[5]]
+
         if (p[3] == "("):
             if ", Aninhada" not in class_types[n]:
                 class_types[n].append(", Aninhada")
     elif len(p) == 4:
-        print(p[3])
-
-        if p[3][0].isupper():
-            property_type['objectproperty'].append(p[1])
+        if isinstance(p[3], list):
+            p[0] = [p[1], p[2]] + p[3]
         else:
-            property_type['dataproperty'].append(p[1])
+            p[0] = [p[1], p[2], p[3]]
+
+        # if p[3][0].isupper():
+        #     property_type['objectproperty'].append(p[1])
+        # else:
+        #     property_type['dataproperty'].append(p[1])
 
         if (p[3] == "("):
             if ", Aninhada" not in class_types[n]:
                 class_types[n].append(", Aninhada") 
+    else:
+        p[0] = [p[1], p[2], p[3], p[4]]
 
 def p_namespace_section(p):
-    '''namespace_section : XSD XSD_NUM_DATATYPES LEFTBRACKET comparator_operator CARDINALITY RIGHTBRACKET
-                        | XSD XSD_NUM_DATATYPES
+    '''namespace_section : XSD XSD_NUM_DATATYPES
                         | XSD XSD_OTHER_DATATYPES
                         | RDF RDF_DATATYPES
                         | RDFS RDFS_DATATYPES
+                        | XSD XSD_NUM_DATATYPES LEFTBRACKET comparator_operator CARDINALITY RIGHTBRACKET
                         | OWL OWL_DATATYPES LEFTBRACKET comparator_operator CARDINALITY RIGHTBRACKET'''
     
-    p[0] = f"{p[1]}"
+    if len(p) == 3:
+        p[0] = [p[1], p[2]]
+    else:
+        p[0] = [p[1], p[2], p[3], p[4], p[5], p[6]]
 
 def p_datatype_section(p):
     '''datatype_section : XSD_NUM_DATATYPES LEFTBRACKET comparator_operator CARDINALITY RIGHTBRACKET
@@ -212,7 +221,10 @@ def p_datatype_section(p):
                         | RDFS_DATATYPES
                         | OWL_DATATYPES LEFTBRACKET comparator_operator CARDINALITY RIGHTBRACKET'''
     
-    p[0] = f"{p[1]}"
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        p[0] = [p[1], p[2], p[3], p[4], p[5]]
 
 def p_keyword_restrict(p):
     '''keyword_restrict : MAX
@@ -230,6 +242,9 @@ def p_keyword_property(p):
                  | NOT
                  | THAT
     '''
+
+    p[0] = p[1]
+
     global class_types, n
     if p[1] == "only" and parser.symstack[-2].value == '(':
         if ", com Axioma de Fechamento" not in class_types[n]:
@@ -248,9 +263,9 @@ def p_class_name_list_or(p):
     '''class_name_list_or : class_name_list_or OR CLASSNAME
                           | CLASSNAME'''
     if len(p) == 4:
-        p[0] = p[1] + [p[3]]
+        p[0] = p[1] + [p[2], p[3]]
     else:
-        p[0] = [p[1]]
+        p[0] = p[1]
 
     if parser.symstack[-1].value == "SubClassOf:" or parser.symstack[-1].value == "EquivalentTo:":
         if ", Coberta" not in class_types[n]:
@@ -260,7 +275,7 @@ def p_individual_list_or(p):
     '''individual_list_or : individual_list_or OR INDIVIDUAL
                           | INDIVIDUAL'''
     if len(p) == 4:
-        p[0] = p[1] + [p[3]]
+        p[0] = p[1] + [p[2], p[3]]
     else:
         p[0] = [p[1]]
 

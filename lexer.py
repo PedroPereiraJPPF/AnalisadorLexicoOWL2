@@ -118,10 +118,10 @@ special_symbols = {
 
 # Tokens
 tokens = [
-    'CLASSNAME', 'PROPERTY', 'INDIVIDUAL', 'NAMESPACE',
+    'CLASSNAME', 'PROPERTY', 'INDIVIDUAL',
     'XSD_NUM_DATATYPES', 'XSD_OTHER_DATATYPES', 
     'RDF_DATATYPES', 'RDFS_DATATYPES', 'OWL_DATATYPES',
-    'CARDINALITY', 'SPECIALSYMBOL', 'KEYWORD'
+    'CARDINALITY'
 ] + list(reserved.values()) + list(special_symbols.values()) + list(namespaces.values())
 
 # tokens = [
