@@ -22,13 +22,15 @@ Class: Activity
    
     SubClassOf: 
         FunctionalComplex,
-        participatedIn some DataExchange
+        participatedIn some xsd:integer
     
     
 Class: Actor
   
     SubClassOf: 
         FunctionalComplex,
+        participatedIn some xsd:integer,
+        participatedOn some xsd:string,
         participatedIn some DataExchange
     
     
@@ -263,8 +265,6 @@ Class: EconomicOffering
         Relator
          and ((composedBy some ConditionalClaim) and (composedBy some ConditionalCommitment))
          
-    
-    
 Class: Evaluated
 
     EquivalentTo: 

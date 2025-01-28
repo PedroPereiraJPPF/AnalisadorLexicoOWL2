@@ -209,11 +209,11 @@ def p_closure_section(p):
         property_state["closed"].append(property_state["open"])
         property_state["open"] = None
     elif p[1] in property_state["closed"]:
-        print(RED + f"Erro: Propriedade {p[1]} já foi fechada" + RESET)
+        print(RED + f"Erro Semantico: Propriedade {p[1]} já foi fechada" + RESET)
     elif property_state["open"] == None:
-        print(RED + f"Erro: Nenhuma propriedade aberta no momento" + RESET)
+        print(RED + f"Erro Semantico: Nenhuma propriedade aberta no momento" + RESET)
     elif p[1] != property_state["open"]:
-        print(RED + f"Erro: Propriedade {property_state['open']} está aberta, o fechamento deve se destinar primeiramente a ela" + RESET)
+        print(RED + f"Erro Semantico: Propriedade {property_state['open']} está aberta, o fechamento deve se destinar primeiramente a ela" + RESET)
         
     if len(p) == 6:
         p[0] = [p[1], p[2], p[3]] + p[4] + [p[5]]
@@ -392,9 +392,9 @@ def p_individual_list_or(p):
 
 def p_error(p):
     if p:
-        print(f"{RED} Erro de sintaxe na linha {p.lineno}: token inesperado '{p.value}' {RESET}")
+        print(f"{RED}Erro de sintaxe na linha {p.lineno}: token inesperado '{p.value}' {RESET}")
     else:
-        print("{RED} Erro de sintaxe: Símbolo esperado não encontrado {RESET}")
+        print("{RED}Erro de sintaxe: Símbolo esperado não encontrado {RESET}")
 
 
 def getLastWord(propertyList: list):
