@@ -2,7 +2,8 @@ Class: Activity
    
     SubClassOf: 
         FunctionalComplex,
-        participatedIn some DataExchange
+        participatedIn some xsd:integer[>=0],
+        participatesOn some Participated
     
     
 Class: Actor
