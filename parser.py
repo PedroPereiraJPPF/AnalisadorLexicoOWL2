@@ -15,6 +15,10 @@ classes = {}
 class_name = []
 class_types = [[]]
 current_class_name = ""
+property_state = {
+    'open': None,
+    'closed': []
+}
 property_type = {
     'dataproperty': [],
     'objectproperty': []
@@ -31,9 +35,13 @@ def p_ontology(p):
     else:
         p[0] = [p[1]]
 
-    global n, class_types, class_name
+    global n, class_types, class_name, property_state
     n += 1
     class_types.append([])
+    property_state = {
+        'open': None,
+        'closed': []
+    }
 
 def p_class_declaration(p):
     '''class_declaration : primitive_class_declaration 
@@ -164,9 +172,22 @@ def p_individual_section(p):
 def p_property_list(p):
     '''property_list : property_list COMMA LEFTPAREN property RIGHTPAREN
                      | property_list COMMA property
-                     | property_list AND LEFTPAREN property 
-                     | property_list AND property
+                     | property_list COMMA closure_section
+                     | property_list COMMA LEFTPAREN closure_section RIGHTPAREN
                      | property'''
+    if len(p) == 6:
+        p[0] = p[1] + [p[2]] + [p[3]] + [p[4]] + [p[5]]
+    elif len(p) == 4:
+        p[0] = p[1] + [p[2]] + [p[3]]
+    elif len(p) == 2:
+        p[0] = [p[1]]
+
+def p_defined_property_list(p):
+    '''defined_property_list : defined_property_list AND LEFTPAREN property RIGHTPAREN
+                             | defined_property_list AND property
+                             | defined_property_list AND closure_section
+                             | defined_property_list AND LEFTPAREN closure_section RIGHTPAREN
+                             | property''' 
     if len(p) == 4:
         p[0] = p[1] + [p[2]] + p[3]
     elif len(p) == 6:
@@ -196,21 +217,10 @@ def p_closure_section(p):
         print(RED + f"Erro: Nenhuma propriedade aberta no momento" + RESET)
     elif p[1] != property_state["open"]:
         print(RED + f"Erro: Propriedade {property_state['open']} está aberta, o fechamento deve se destinar primeiramente a ela" + RESET)
-
-def p_defined_property_list(p):
-    '''defined_property_list : defined_property_list AND LEFTPAREN property RIGHTPAREN
-                             | defined_property_list AND property
-                             | property'''
-            
-    if len(p) == 4:
-        if isinstance(p[1], list):
-            p[0] = p[1] + [p[2], p[3]]
-        else:
-            p[0] = [p[1], p[2], p[3]]
-    elif len(p) == 6:
-        p[0] = p[1] + [p[2], p[3], p[4], p[5]]
-    else:
-        p[0] = p[1]
+        
+    if len(p) == 6:
+        p[0] = [p[1] + p[2] + p[3]] + p[4] + [p[5]]
+        
 
 def p_class_list(p):
     '''class_list : class_list COMMA CLASSNAME
@@ -246,7 +256,13 @@ def p_property(p):
                 | property AND property
     '''
     
-    global class_types, n, property_type
+    global class_types, n, property_type, property_state
+    
+    if p[1] not in property_state["closed"]:
+        if type(p[1]) == str and p[1] != '(':
+            property_state["open"] = p[1]
+    elif p[1] in property_state["closed"]:
+        print(RED + f"Erro: Propriedade {p[1]} já foi fechada" + RESET)
 
     if len(p) == 6:
         p[0] = [p[1], p[2], p[3]] + p[4] + [p[5]]
@@ -318,8 +334,7 @@ def p_keyword_restrict(p):
     p[0] = p[1]
 
 def p_keyword_property(p):
-    '''keyword_property : ONLY 
-                 | ALL
+    '''keyword_property :  ALL
                  | SOME
                  | VALUE
                  | NOT
@@ -328,10 +343,10 @@ def p_keyword_property(p):
 
     p[0] = p[1]
 
-    global class_types, n
-    if p[1] == "only" and parser.symstack[-2].value == '(':
-        if ", com Axioma de Fechamento" not in class_types[n]:
-            class_types[n].append(", com Axioma de Fechamento")
+    # global class_types, n
+    # if p[1] == "only" and parser.symstack[-2].value == '(':
+    #     if ", com Axioma de Fechamento" not in class_types[n]:
+    #         class_types[n].append(", com Axioma de Fechamento")
 
 def p_comparator_operator(p):
     '''comparator_operator : GREATEROREQUAL

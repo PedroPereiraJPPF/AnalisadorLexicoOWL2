@@ -53,8 +53,8 @@ Class: Certification
         
     SubClassOf: 
         Activity,
-        historicallyDependsOn only CertificationAct,
-        historicallyDependsOn exactly 1 CertificationAct
+        historicallyDependsOn exactly 1 CertificationAct,
+        historicallyDependsOn only CertificationAct
     
     
 Class: CertificationAct
