@@ -216,7 +216,7 @@ def p_closure_section(p):
         print(RED + f"Erro: Propriedade {property_state['open']} está aberta, o fechamento deve se destinar primeiramente a ela" + RESET)
         
     if len(p) == 6:
-        p[0] = [p[1] + p[2] + p[3]] + p[4] + [p[5]]
+        p[0] = [p[1], p[2], p[3]] + p[4] + [p[5]]
     else:
         p[0] = [p[1], p[2], p[3]]
         
@@ -253,6 +253,7 @@ def p_property(p):
                 | PROPERTY keyword_property LEFTPAREN property RIGHTPAREN
                 | PROPERTY keyword_property LEFTPAREN class_name_list_or RIGHTPAREN
                 | property OR property
+                | property AND property
                 | closure_section
     '''
     
