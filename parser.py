@@ -188,15 +188,12 @@ def p_defined_property_list(p):
                              | defined_property_list AND closure_section
                              | defined_property_list AND LEFTPAREN closure_section RIGHTPAREN
                              | property''' 
-    if len(p) == 4:
-        p[0] = p[1] + [p[2]] + p[3]
-    elif len(p) == 6:
-        if isinstance(p[4], list):
-            p[0] = p[1] + [p[2], p[3]] + p[4] + [p[5]]
-        else:
-            p[0] = p[1] + [p[2], p[3], p[4], p[5]]
-    else:
-        p[0] = p[1]
+    if len(p) == 6:
+        p[0] = p[1] + [p[2]] + [p[3]] + [p[4]] + [p[5]]
+    elif len(p) == 4:
+        p[0] = p[1] + [p[2]] + [p[3]]
+    elif len(p) == 2:
+        p[0] = [p[1]]
 
 def p_closure_section(p):
     '''closure_section : PROPERTY ONLY CLASSNAME
@@ -220,6 +217,8 @@ def p_closure_section(p):
         
     if len(p) == 6:
         p[0] = [p[1] + p[2] + p[3]] + p[4] + [p[5]]
+    else:
+        p[0] = [p[1], p[2], p[3]]
         
 
 def p_class_list(p):
@@ -253,8 +252,8 @@ def p_property(p):
                 | PROPERTY keyword_restrict CARDINALITY CLASSNAME
                 | PROPERTY keyword_property LEFTPAREN property RIGHTPAREN
                 | PROPERTY keyword_property LEFTPAREN class_name_list_or RIGHTPAREN
-                | property AND property
                 | property OR property
+                | closure_section
     '''
     
     global class_types, n, property_type, property_state
@@ -297,6 +296,8 @@ def p_property(p):
         if (p[3] == "("):
             if ", Aninhada" not in class_types[n]:
                 class_types[n].append(", Aninhada") 
+    elif len(p) == 2:
+        p[0] = p[1]
     else:
         p[0] = [p[1], p[2], p[3], p[4]]
 
