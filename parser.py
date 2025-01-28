@@ -254,6 +254,7 @@ def p_property(p):
                 | PROPERTY keyword_property LEFTPAREN property RIGHTPAREN
                 | PROPERTY keyword_property LEFTPAREN class_name_list_or RIGHTPAREN
                 | property AND property
+                | property OR property
     '''
     
     global class_types, n, property_type, property_state
