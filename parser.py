@@ -5,6 +5,7 @@ from lexer import tokens
 classes = {}
 class_name = []
 class_types = [[]]
+current_class_name = ""
 property_type = {
     'dataproperty': [],
     'objectproperty': []
@@ -30,11 +31,12 @@ def p_class_declaration(p):
                            | defined_class_declaration'''
     p[0] = p[1]
 
-    # print(p[0])
-
 def p_defined_class_declaration(p):
     '''defined_class_declaration : CLASS CLASSNAME equivalentTo_section subclass_section disjoint_section individual_section
                                    | CLASS CLASSNAME equivalentTo_section disjoint_section individual_section'''   
+    
+    global current_class_name
+    current_class_name = p[2]
     
     if len(p) == 6:
         classes[p[2]] = {
@@ -175,7 +177,7 @@ def p_property(p):
                 | PROPERTY keyword_property LEFTPAREN class_name_list_or RIGHTPAREN
     '''
     
-    global class_types, n
+    global class_types, n, property_type
 
     if len(p) == 6:
         p[0] = [p[1], p[2], p[3]] + p[4] + [p[5]]
@@ -189,10 +191,10 @@ def p_property(p):
         else:
             p[0] = [p[1], p[2], p[3]]
 
-        # if p[3][0].isupper():
-        #     property_type['objectproperty'].append(p[1])
-        # else:
-        #     property_type['dataproperty'].append(p[1])
+        if getLastWord(p[0])[0].isupper():
+            property_type['objectproperty'].append(getFirstWord(p[0]))
+        else:
+            property_type['dataproperty'].append(getFirstWord(p[0]))
 
         if (p[3] == "("):
             if ", Aninhada" not in class_types[n]:
@@ -288,5 +290,28 @@ def p_error(p):
         print(f"Erro de sintaxe na linha {p.lineno}: token inesperado '{p.value}'")
     else:
         print("Erro de sintaxe: Símbolo esperado não encontrado")
+
+
+def getLastWord(propertyList: list):
+    i = len(propertyList) - 1
+
+    while propertyList[i] == ")" or propertyList[i] == "]":
+        i -= 1
+
+    if isinstance(propertyList[i], list):
+        return getLastWord(propertyList[i])
+
+    return propertyList[i]
+
+def getFirstWord(propertyList: list):
+    i = 0
+
+    while propertyList[i] == "(" or propertyList[i] == "[":
+        i += 1
+
+    if isinstance(propertyList[i], list):
+        return getFirstWord(propertyList[i])
+
+    return propertyList[i]
 
 parser = yacc.yacc()

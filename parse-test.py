@@ -9,12 +9,14 @@ def test_parser(input_data, expected_output):
     
     result = parser.parse(input_data, lexer=lexer)
 
-    for classItem in result:
-        for key, value in classItem.items():
-            print(f"{Fore.GREEN}Class: {key}")
+    print(property_type)
+
+    # for classItem in result:
+    #     for key, value in classItem.items():
+    #         print(f"{Fore.GREEN}Class: {key}")
             
-            for internalKey in value:
-                print(f"{Fore.BLUE}    {internalKey}")
+    #         for internalKey in value:
+    #             print(f"{Fore.BLUE}    {internalKey}")
 
 
 # Teste Unitarios para classes primitivas
