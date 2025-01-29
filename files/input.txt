@@ -2,7 +2,7 @@ Class: Activity
    
     SubClassOf: 
         FunctionalComplex,
-        participatedIn some xsd:integer[>=0],
+        participatedIn some xsd:integer,
         participatesOn some Participated
     
     

@@ -303,7 +303,7 @@ def p_property(p):
         p[0] = [p[1], p[2], p[3], p[4]]
 
 def p_namespace_section(p):
-    '''namespace_section : XSD XSD_NUM_DATATYPES
+    '''namespace_section : num_datatypes_error
                         | XSD XSD_OTHER_DATATYPES
                         | RDF RDF_DATATYPES
                         | RDFS RDFS_DATATYPES
@@ -312,6 +312,8 @@ def p_namespace_section(p):
     
     if len(p) == 3:
         p[0] = [p[1], p[2]]
+    elif len(p) == 2:
+        p[0] = p[1]
     else:
         p[0] = [p[1], p[2], p[3], p[4], p[5], p[6]]
 
@@ -327,6 +329,13 @@ def p_datatype_section(p):
         p[0] = p[1]
     else:
         p[0] = [p[1], p[2], p[3], p[4], p[5]]
+
+def p_num_datatypes_error(p):
+    '''num_datatypes_error : XSD XSD_NUM_DATATYPES'''
+
+    print(RED + f"Erro Semantico: O tipo {p[2]} deve ter um intervalo definido" + RESET)
+
+    p[0] = [p[1], p[2]]
 
 def p_keyword_restrict(p):
     '''keyword_restrict : MAX
